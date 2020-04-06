@@ -1,0 +1,17 @@
+:: Delete any existing TRX file. New Change
+del ..\FIS.IP.Customer.Core.UnitTest\Utility\UnitTest.Results.TrxandXml\*.trx
+:: Execute the Unit Test and Generate TRX file
+dotnet test --logger "trx;LogFileName=..\..\FIS.IP.Customer.Core.UnitTest\Utility\UnitTest.Results.TrxandXml\CustomerUnitTestResult.trx"
+:: Rename created TRX file to match given fileName in above command. New Change
+ren ..\FIS.IP.Customer.Core.UnitTest\Utility\UnitTest.Results.TrxandXml\*.trx CustomerUnitTestResult.trx
+::pause		:: Convert TRX file to HTML report for UnitTest execution
+..\FIS.IP.Customer.Core.UnitTest\Utility\trxer.master\TrxerConsole\bin\Debug\TrxerConsole.exe ..\FIS.IP.Customer.Core.UnitTest\Utility\UnitTest.Results.TrxandXml\CustomerUnitTestResult.trx
+::pause		Generate cobertura formated code coverage XML file
+dotnet test /p:CollectCoverage=true /p:CoverletOutput=..\FIS.IP.Customer.Core.UnitTest\Utility\UnitTest.Results.CodeCoverage\ /p:CoverletOutputFormat=cobertura
+::pause		Convert cobertura xml to HTML code coverage report
+ReportGenerator.exe "-reports:..\FIS.IP.Customer.Core.UnitTest\Utility\UnitTest.Results.CodeCoverage\coverage.cobertura.xml" "-targetdir:..\FIS.IP.Customer.Core.UnitTest\Utility\UnitTest.Results.CodeCoverage\HtmlReport"
+::pause
+..\FIS.IP.Customer.Core.UnitTest\Utility\UnitTest.Results.TrxandXml\CustomerUnitTestResult.trx.html
+pause
+..\FIS.IP.Customer.Core.UnitTest\Utility\UnitTest.Results.CodeCoverage\HtmlReport\index.htm
+pause
